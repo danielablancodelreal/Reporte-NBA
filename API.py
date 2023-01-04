@@ -71,16 +71,15 @@ def extract(team):
 	soup = BeautifulSoup(page.text, 'html.parser')
 
 	partidos = soup.find_all(class_="px-box mb-10")
+	texto = ""
 
 	#Imprime los próximos partidos con las cuotas
 	for partido in partidos:
-		print(partido.text.strip('\n'))
+		texto += partido.text.strip('\n')
 
+	return equipo, season2022, season2021, jugadores, texto
 
-
-	return equipo, season2022, season2021, jugadores
-
-def transform(equipo, season2022, season2021, jugadores):
+def transform(equipo, season2022, season2021, jugadores, texto):
 	#Descargamos el logo del equipo
 	logo = equipo["response"][0]["logo"]
 	img_data = requests.get(logo).content
@@ -185,7 +184,8 @@ def transform(equipo, season2022, season2021, jugadores):
 		variables.append(jugadores['response'][i]['birth']['country'])
 		variables.append(jugadores['response'][i]['height']['meters'])
 		variables.append(jugadores['response'][i]['weight']['kilograms'])
-		
+	
+	variables.append(texto)
 	print(variables)
 
 	html = """	
@@ -282,7 +282,7 @@ def transform(equipo, season2022, season2021, jugadores):
 
 	
 	<h2 style="font-family:Trebuchet MS;text-align:center;margin:60px 30px 10px">Pronóstico próximo partido</h2>
-
+	<h3>{}</h3>
 	</body>
 	</html>
 
@@ -300,6 +300,6 @@ def load(html):
 
 if __name__ == "__main__":
 	team = input('Equipo: ')
-	equipo, season2022, season2021, jugadores = extract(team)
-	html = transform(equipo, season2022, season2021, jugadores)
+	equipo, season2022, season2021, jugadores, texto = extract(team)
+	html = transform(equipo, season2022, season2021, jugadores,texto)
 	load(html)

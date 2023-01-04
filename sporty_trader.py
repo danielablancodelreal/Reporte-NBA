@@ -8,7 +8,12 @@ soup = BeautifulSoup(page.text, 'html.parser')
 
 partidos = soup.find_all(class_="px-box mb-10")
 
-#Imprime los próximos partidos con las cuotas
+texto = ""
+
+	#Imprime los próximos partidos con las cuotas
 for partido in partidos:
-    print(partido.text.strip('\n'))
+	texto += partido.text.strip('\n')
+
+print(texto)
+
 
