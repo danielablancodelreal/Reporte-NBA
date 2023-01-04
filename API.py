@@ -1,4 +1,7 @@
 import requests
+import os
+from pyhtml2pdf import converter
+from bs4 import BeautifulSoup
 
 def extract(team):
 	url = " https://v2.nba.api-sports.io/teams"
@@ -61,6 +64,18 @@ def extract(team):
 	print(response.json())
 
 	jugadores = response.json()
+
+	#Pronóstico usando webscrasping
+
+	page = requests.get('https://www.sportytrader.es/cuotas/baloncesto/usa/nba-306/')
+	soup = BeautifulSoup(page.text, 'html.parser')
+
+	partidos = soup.find_all(class_="px-box mb-10")
+
+	#Imprime los próximos partidos con las cuotas
+	for partido in partidos:
+		print(partido.text.strip('\n'))
+
 
 
 	return equipo, season2022, season2021, jugadores
@@ -180,7 +195,7 @@ def transform(equipo, season2022, season2021, jugadores):
 		<body style="background-color:rgb(201, 209, 211);">
 	<h2 style="font-family:Trebuchet MS;text-align:center;margin:60px 30px 10px">Reporte Temporada 2022-23</h2>
 	<h1 style="font-family:Trebuchet MS;text-align:center">{}</h1>
-	<img src="logo.png" alt="Logotipo del equipo" style="position:fixed;top:60px;right:30px">
+	<img src="logo.png" alt="Logotipo del equipo" width="100px" height="auto" style="position:absolute;top:60px;right:30px">
 
 	<h3 style="background-color:rgb(222, 230, 232);font-family:Trebuchet MS;text-align:center;margin:30px">ID: {} &emsp; Ciudad: {} &emsp; Apodo: {}</h3>
 
@@ -271,10 +286,20 @@ def transform(equipo, season2022, season2021, jugadores):
 	</body>
 	</html>
 
-	""".format(*variables) 										#pc_games,pc_fastBreakPoints,pc_points,pc_biggestLead, pc_secondChancePoints,pc_pointsOffTurnovers,pc_pointsInPaint,pc_fgm,pc_fga,pc_fgp,pc_ftm,pc_fta,pc_ftp,pc_tpm,pc_tpp,pc_offReb,pc_defReb,pc_totReb,pc_assists,pc_pFouls,pc_steals,pc_turnovers,pc_blocks,pc_plusMinus)
+	""".format(*variables) 									
 	print(html)
+	return html
+
+def load(html):
+	with open('report_html.html', "w") as f:
+		f.write(html)
+
+	path = os.path.abspath('report_html.html')
+	converter.convert(f'file:///{path}', 'report.pdf')
+
 
 if __name__ == "__main__":
 	team = input('Equipo: ')
 	equipo, season2022, season2021, jugadores = extract(team)
-	transform(equipo, season2022, season2021, jugadores)
+	html = transform(equipo, season2022, season2021, jugadores)
+	load(html)
