@@ -1,0 +1,1 @@
+Es necesario disponer de credenciales para la API, API-Sports (https://v2.nba.api-sports.io) o credenciales a través de https://rapidapi.com/hub.
