@@ -14,7 +14,6 @@ def extract(team):
     }
 
 	response = requests.request("GET", url, headers=headers, params=params)
-	print(response.json())
 
 	equipo = response.json()
 	id = equipo["response"][0]["id"]
@@ -32,7 +31,6 @@ def extract(team):
 	}
 
 	response = requests.request("GET", url, headers=headers, params=params)
-	print(response.json())
 
 	season2022 = response.json()
 
@@ -47,7 +45,6 @@ def extract(team):
 	}
 
 	response = requests.request("GET", url, headers=headers, params=params)
-	print(response.json())
 
 	season2021 = response.json()
 
@@ -61,7 +58,6 @@ def extract(team):
 	}
 
 	response = requests.request("GET", url, headers=headers, params=params)
-	print(response.json())
 
 	jugadores = response.json()
 
@@ -168,7 +164,7 @@ def transform(equipo, season2022, season2021, jugadores, texto):
 	defReb21,totReb21,assists21,pFouls21,steals21,turnovers21,blocks21,plusMinus21]
 
 
-	for i in range(len(lista22)-1):
+	for i in range(len(lista22)):
 		variables.append(str(round((float(lista22[i]) - float(lista21[i]))/abs(float(lista21[i]))*100)) + "%")
 
 
@@ -186,7 +182,6 @@ def transform(equipo, season2022, season2021, jugadores, texto):
 		variables.append(jugadores['response'][i]['weight']['kilograms'])
 	
 	variables.append(texto)
-	print(variables)
 
 	html = """	
 	<!DOCTYPE html>
@@ -276,13 +271,11 @@ def transform(equipo, season2022, season2021, jugadores, texto):
 
 	<h2 style="font-family:Trebuchet MS;margin:60px 30px 10px">{} {}, {}</h2>
 	<h3 style="font-family:Trebuchet MS;margin:10px 30px 60px;color:rgb(70, 69, 69)">Fecha de nacimiento: {} &emsp; Nacionalidad: {} &emsp; Altura: {}m &emsp; Peso: {}kg</h3>
-
-	<h2 style="font-family:Trebuchet MS;margin:60px 30px 10px">{} {}, {}</h2>
-	<h3 style="font-family:Trebuchet MS;margin:10px 30px 60px;color:rgb(70, 69, 69)">Fecha de nacimiento: {} &emsp; Nacionalidad: {} &emsp; Altura: {}m &emsp; Peso: {}kg</h3>
-
 	
 	<h2 style="font-family:Trebuchet MS;text-align:center;margin:60px 30px 10px">Pronóstico próximo partido</h2>
-	<h3>{}</h3>
+	<h3 style="font-family:Trebuchet MS;text-align:justify;margin:60px 30px 10px">A continuación se pueden ver los próximos partidos y las cuotas de apuestas para el equipo 1 y 2
+	Esto nos permite conocer las probabilidades de que gane cada equipo (cuanto más baja es la cuota, mayor es la probabilidad).</h3>
+	<h3 style="font-family:Trebuchet MS;text-align:center;margin:60px 30px 10px">{}</h3>
 	</body>
 	</html>
 
